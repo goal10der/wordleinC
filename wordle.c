@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 void get_random_word(int min, int max, char *filename, char *answer) {
     int target_line = arc4random_uniform(max - min + 1) + min;
@@ -29,24 +30,38 @@ void input_word(char *guess) {
     }   
 }
 void compare_words (char *answer, char *guess, int *result) {
-    int compare = strncmp(answer, guess, 5);
+    int compare = strncasecmp(answer, guess, 5);
     *result = compare;
 }
 void feedback(char *answer, char *guess) {
     for (int i = 0; i < 5; i++) {
-        if (guess[i] == answer[i]) {
-            printf("✓", guess[i]);
-        } else if (strchr(answer, guess[i]) != NULL) {
-            printf("○");
+        char g = tolower(guess[i]);
+        char a = tolower(answer[i]);
+        if (g == a) {
+            printf("✓"); 
         } else {
-            printf("✗");
+            int found = 0;
+            for (int j = 0; j < 5; j++) {
+                if (tolower(answer[j]) == g) {
+                    found = 1;
+                    break;
+                }
+            }
+            if (found) {
+                printf("○");
+            } else {
+                printf("✗");
+            }
         }
     }
+    printf("\n");
 }
 int main() {
-    char filename[] = "words.txt";
+   #ifndef WORDS_PATH
+    #define WORDS_PATH "words.txt"
+    #endif
     char answer[6];
-    get_random_word(1, 21953, filename, answer);
+    get_random_word(1, 21953, WORDS_PATH, answer);
     printf("Welcome to Wordle! Try to guess the 5-letter word.\n");
     char guess[7];
     int result = 1;
@@ -54,7 +69,6 @@ int main() {
     compare_words(answer, guess, &result);
     feedback(answer, guess);
         while (result != 0) {
-        printf("\n");
         input_word(guess);
         compare_words(answer, guess, &result);
         feedback(answer, guess);
