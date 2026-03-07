@@ -34,25 +34,36 @@ void compare_words (char *answer, char *guess, int *result) {
     *result = compare;
 }
 void feedback(char *answer, char *guess) {
+    int result[5] = {0}; // 0 = wrong, 1 = correct, 2 = misplaced
+    int answer_used[5] = {0};
+    int guess_used[5] = {0};
+
+    // First pass: exact matches
     for (int i = 0; i < 5; i++) {
-        char g = tolower(guess[i]);
-        char a = tolower(answer[i]);
-        if (g == a) {
-            printf("✓"); 
-        } else {
-            int found = 0;
-            for (int j = 0; j < 5; j++) {
-                if (tolower(answer[j]) == g) {
-                    found = 1;
-                    break;
-                }
-            }
-            if (found) {
-                printf("○");
-            } else {
-                printf("✗");
+        if (tolower(guess[i]) == tolower(answer[i])) {
+            result[i] = 1;
+            answer_used[i] = 1;
+            guess_used[i] = 1;
+        }
+    }
+
+    // Second pass: misplaced letters
+    for (int i = 0; i < 5; i++) {
+        if (guess_used[i]) continue;
+        for (int j = 0; j < 5; j++) {
+            if (answer_used[j]) continue;
+            if (tolower(guess[i]) == tolower(answer[j])) {
+                result[i] = 2;
+                answer_used[j] = 1;
+                break;
             }
         }
+    }
+
+    for (int i = 0; i < 5; i++) {
+        if (result[i] == 1)      printf("✓");
+        else if (result[i] == 2) printf("○");
+        else                     printf("✗");
     }
     printf("\n");
 }
