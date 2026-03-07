@@ -61,9 +61,9 @@ void feedback(char *answer, char *guess) {
     }
 
     for (int i = 0; i < 5; i++) {
-        if (result[i] == 1)      printf("✓");
-        else if (result[i] == 2) printf("○");
-        else                     printf("✗");
+        if (result[i] == 1)      printf("✓|");
+        else if (result[i] == 2) printf("○|");
+        else                     printf("✗|");
     }
     printf("\n");
 }
