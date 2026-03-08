@@ -34,11 +34,9 @@ void compare_words (char *answer, char *guess, int *result) {
     *result = compare;
 }
 void feedback(char *answer, char *guess) {
-    int result[5] = {0}; // 0 = wrong, 1 = correct, 2 = misplaced
+    int result[5] = {0};
     int answer_used[5] = {0};
     int guess_used[5] = {0};
-
-    // First pass: exact matches
     for (int i = 0; i < 5; i++) {
         if (tolower(guess[i]) == tolower(answer[i])) {
             result[i] = 1;
@@ -46,8 +44,6 @@ void feedback(char *answer, char *guess) {
             guess_used[i] = 1;
         }
     }
-
-    // Second pass: misplaced letters
     for (int i = 0; i < 5; i++) {
         if (guess_used[i]) continue;
         for (int j = 0; j < 5; j++) {
@@ -59,7 +55,7 @@ void feedback(char *answer, char *guess) {
             }
         }
     }
-
+    printf("|");
     for (int i = 0; i < 5; i++) {
         if (result[i] == 1)      printf("✓|");
         else if (result[i] == 2) printf("○|");
@@ -82,6 +78,7 @@ int main() {
         while (result != 0) {
         input_word(guess);
         compare_words(answer, guess, &result);
+
         feedback(answer, guess);
     }
     printf("\n");
